@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import subprocess
 # from wraplorenzmie.pylorenzmie.fitting.Localizer import Localizer
+from scipy.io import loadmat
 
 
 class video_reader(object):
@@ -125,21 +126,38 @@ def crop(tocrop, x, y, h):
 
 #     return prediction
 
+def open_xyz_mat(pathname, upward=False, version='1'):
+    data = loadmat(pathname, squeeze_me=True)
+    if version == '1':
+        raw_data = np.zeros((len(data['x']), 3))
+        raw_data[:,0] = data['x']
+        raw_data[:,1] = data['y']
+        raw_data[:,2] = data['z']
+    elif version == '0':
+        raw_data = data["data"][:, 0:3]
+    elif version == '2':
+        raw_data = np.zeros((len(data['x']), 7))
+        raw_data[:,0] = data['x']
+        raw_data[:,1] = data['y']
+        raw_data[:,2] = data['z']
+        raw_data[:,3] = data['dx']
+        raw_data[:,4] = data['dy']
+        raw_data[:,5] = data['dz']
+        raw_data[:,6] = data['redchi']
+    else:
+        print("Unknown version. Only values accepted = 'new' or 'old'.")
+        print("Try again.")
+        version = str(input("Data version? Enter old or new: "))
+        raw_data = open_xyz_mat(pathname, upward=upward, version=version)
+    if upward:
+        raw_data[:,2] = - raw_data[:,2]
+    del data
+    return raw_data
 
-if __name__ == "__main__":
-    """
-    TO DO : Unit testing.
-    """
-    import matplotlib.pyplot as plt
-    import time
-
-    t = time.time()
-    vid = video_reader(
-        "~/Documents/film0910/Basler_acA1920-155um__22392621__20191009_143652597.mp4"
-    )
-    bg = vid.get_background(50)
-    t = time.time() - t
-    vid.close()
-    print(t)
-    plt.imshow(bg, cmap="gray")
-    plt.show()
+def remove_end_zeros(data):
+    try:
+        ind = list(data[:,0]).index(0)
+        data = data[:ind,:]
+    except ValueError:
+        print('No pb. No zero in raw data.')
+    return data
