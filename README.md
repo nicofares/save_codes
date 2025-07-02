@@ -5,7 +5,7 @@ Saving codes.
 ## brownian
 
 Codes related to the tracking of Brownian colloids moving in a liquid and analysis of the corresponding individual trajectories.
-The colloids are tracked by Mie holography. An example is shown below:
+The colloids are tracked by Mie holography:
 [Hologram](https://github.com/user-attachments/files/21018530/fig_holograms_PS_3um_20240906_vid_6_first_im_zPi_m30um.pdf)
 
 
