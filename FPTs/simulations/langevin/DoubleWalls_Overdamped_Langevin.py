@@ -69,10 +69,10 @@ class DoubleWallsLangevin():
         Rn[1,0] = self.R0[1]
 
         Rn = np.asarray(trajectory_python(self.Nt, self.Nt_sub,
-                                   Rn,
-                                   self.dt,
-                                   self.a, self.eta0,
-                                   self.kBT, self.H, self.lB, self.lD, self.B))
+                                            Rn,
+                                            self.dt,
+                                            self.a, self.eta0,
+                                            self.kBT, self.H, self.lB, self.lD, self.B, ))
 
         self.Xn = Rn[0,:]
         self.Zn = Rn[1,:]
@@ -253,51 +253,11 @@ class DoubleWallsLangevin():
     # :param N: Number of random number wanted (Default = 1).
     # :return: N random altitude z generated on distribution f(z).
         try :
-            uniform_samples = np.random.random(int(N))
+            # uniform_samples = np.random.random(int(N))
+            rng = np.random.default_rng()
+            child = rng.spawn(1)[0]
+            uniform_samples = child.random(N)
             required_samples = self.sample_f(uniform_samples)
             return required_samples
         except ValueError:
             self.return_samples(N)
-
-
-"""
-END CLASS
-"""
-
-def test():
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    custom_params = {
-        "xtick.direction": "in",
-        "ytick.direction": "in",
-        "lines.markeredgecolor": "k",
-        "lines.markeredgewidth": 0.3,
-        "figure.dpi": 200,
-        "text.usetex": True,
-        "font.family": "serif",
-    }
-    sns.set_theme(context="paper", style="ticks", rc=custom_params)
-    a = 2.59e-6
-    H = 60e-6
-    lD = 35.0e-9
-    T = 300
-    lB = 135e-9
-    B = 10.0
-    eta0 = 0.001
-    simu = DoubleWallsLangevin(dt=0.01, Nt=100_000,
-                                               a=a, H=H, lD=lD, lB=lB, B=B,
-                                               Nt_sub=1, eta0=eta0,
-                                               T=T, R0=None)
-    simu.trajectory()
-    ###Plot MSD
-    MSDz, tau_z = simu.MSD(axis="z")
-    dt_theo = np.linspace(simu.dt, simu.dt * simu.Nt, 100)
-    plt.figure(figsize=(1.5 * 3.375, 1.5 * 3.375 / 1.68), tight_layout=True)
-    plt.loglog(tau_z, MSDz, "o")
-    plt.plot(tau_z, 2 * simu.D0 * tau_z, "k-")
-    plt.xlabel(r"$t$")
-    plt.ylabel(r"$\langle X_t^2 \rangle$")
-    plt.show()
-
-if __name__ == '__main__':
-    test()

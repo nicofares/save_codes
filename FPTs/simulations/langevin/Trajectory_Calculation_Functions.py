@@ -2,7 +2,8 @@ import numpy as np
 import time
 
 pi = np.pi
-rng1 = np.random.default_rng()
+# rng1 = np.random.default_rng()
+
 def gamma_x_tot(zn, a, eta0, H):
     """
     [Libshaber]
@@ -212,7 +213,7 @@ def twist():
 '''
 BOX-MULLER ALGORITHM 
 '''
-def random_gaussian():
+def random_gaussian(i=0):
     #S = 2.0
     #while (S >= 1.0):
         #x1 = 2.0 * random_mersenne_twister() - 1.0
@@ -225,12 +226,13 @@ def random_gaussian():
         #print(S)
         #S = ((-2.0 * np.log(S)) / S) ** 0.5
     #return x1 * S
+    rng1 = np.random.default_rng(seed=i)
     return rng1.normal()
 
 '''
 Trajectory compute (Xn, Zn).
 '''
-def trajectory_python(Nt, Nt_sub, Rn, dt, a, eta0, kBT, H, lB, lD, B):
+def trajectory_python(Nt, Nt_sub, Rn, dt, a, eta0, kBT, H, lB, lD, B, ):
     """
     @param Nt: Number of points.
     @param Nt_sub: Modulation of the number of points recorded.
@@ -248,12 +250,18 @@ def trajectory_python(Nt, Nt_sub, Rn, dt, a, eta0, kBT, H, lB, lD, B):
     """
     Xn = Rn[0,0]
     Zn = Rn[1,0]
-    seed_random(0)
+    # seed_random(0)
+
+    # Noise and seed
+    rng = np.random.default_rng()
+    rng_children = rng.spawn(2)
+    rngx = rng_children[0]
+    rngz = rng_children[1]
 
     for n in range(1, Nt):
         for j in range(0, Nt_sub):
-            Xn = next_Xn(Xn, Zn, random_gaussian(), dt, a, eta0, kBT, H)
-            Zn = next_Zn(Zn, random_gaussian(), dt, a, eta0, kBT, H, lB, lD, B)
+            Xn = next_Xn(Xn, Zn, rngx.normal(), dt, a, eta0, kBT, H)
+            Zn = next_Zn(Zn, rngz.normal(), dt, a, eta0, kBT, H, lB, lD, B)
 
         Rn[0,n] = Xn
         Rn[1,n] = Zn
