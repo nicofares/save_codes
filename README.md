@@ -13,8 +13,10 @@ The colloids are tracked by Mie holography:
 
 Codes related to the analysis of experiments of confined diffusive colloids. More precisely, the codes were used in the following article: 
 
-Fares, *et al.* "Observation of Brownian elastohydrodynamic forces acting on confined soft colloids." Proceedings of the National Academy of Sciences 121.42 (2024): e2411956121.
+Fares *et al.* "Observation of Brownian elastohydrodynamic forces acting on confined soft colloids." Proceedings of the National Academy of Sciences 121.42 (2024): e2411956121.
 
 ## FPTs
 
-Codes related to the target-reaching study consisting of the time it takes to confined colloids to reach an infitely-long target located at a distance $L$ from themselves. 
+Codes related to the target-reaching study consisting of the time it takes to confined colloids to reach an infitely-long target located at a distance $L$ from themselves. More precisely, the codes were used in the following article:
+
+de Tournemire *et al.* "First-passage statistics of confined colloids." Physical Review Research 8.3 (2026): 033309.
